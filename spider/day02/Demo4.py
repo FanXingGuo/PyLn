@@ -12,6 +12,8 @@ headers={
 
 }
 
+
+
 session =requests.Session()
 session.post(url,data=data,headers=headers)
 resp=session.get(furl)
