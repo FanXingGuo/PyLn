@@ -33,52 +33,83 @@ list=[]
 driver=webdriver.Chrome()
 cont=file.readlines()
 
+
 for item in cont:
-    item=item.replace("\n","")
-    webct=eval(item)
-    driver.get(webct["link"])
-    time.sleep(1)
-    curt_url=str(driver.current_url)
-    if curt_url.startswith("https://www.toutiao.com/a"):
-        webct['link']=curt_url
-        print(webct['link'])
+    try:
+        item=item.replace("\n","")
+        webct=eval(item)
+        print("="*30)
+        print(webct)
+        print("="*30)
+        driver.get(webct["link"])
+
+        js = "var q=document.documentElement.scrollTop=" + str(1500)
+        driver.execute_script(js)
+
+        time.sleep(1)
+        curt_url=str(driver.current_url)
+
+        # js = "var q=document.documentElement.scrollTop=" + str(3500)
+        # driver.execute_script(js)
+        # time.sleep(3)
+
+        if curt_url.startswith("https://www.toutiao.com/a"):
+            webct['link']=curt_url
+            #print(webct['link'])
 
 
-        html=driver.page_source
-        htmlEl=etree.HTML(html)
-        newFile.write(str(webct) + '\n')
-        #获取 info 发布信息
-        info=htmlEl.xpath("//div[@class='article-sub']//text()")
-        info="".join(info)
-        #获取 图片和内容 信息
-        arctleContent=htmlEl.xpath("//div[@class='article-content']//p/text()|//div[@class='article-content']//img/@src")
-        #准备下载
-        print(arctleContent)
-        TEXT_NUM=TEXT_NUM+1
-        filename=timeStr+str(toOrder(TEXT_NUM))+".txt"
+            html=driver.page_source
+            htmlEl=etree.HTML(html)
 
+            #获取 info 发布信息
+            info=htmlEl.xpath("//div[@class='article-sub']//text()")
+            info="".join(info)
+            #获取 图片和内容 信息
+            arctleContent=htmlEl.xpath("//div[@class='article-content']//p/text()|//div[@class='article-content']//img/@src")
 
-        with open("./data/txt/"+filename,"a+",encoding="utf-8") as file:
-            file.write(webct['title']+'\n')
-            file.write(info+"\n")
-            for pageItem in arctleContent:
-                if pageItem.startswith("http"):
-                    picNum=picNum+1
-                    picName=timeStr+toOrder(picNum)+".jpeg"
-                    request.urlretrieve(pageItem,"./data/picture/"+picName)
-                    file.write("{"+picName+"}"+"\n")
-                else:
-                    file.write(pageItem+"\n")
+            if len(arctleContent)==0:
+                continue
+
+            newFile.write(str(webct) + '\n')
+
+            #准备下载
+            print(driver.current_url)
+            TEXT_NUM=TEXT_NUM+1
+            filename=timeStr+str(toOrder(TEXT_NUM))+".txt"
 
 
 
 
+            with open("./data/txt/"+filename,"a+",encoding="utf-8") as file:
+                file.write(webct['title']+'\n')
+                file.write(info+"\n")
+                for pageItem in arctleContent:
+                    if pageItem.startswith("http"):
+                        picNum=picNum+1
+                        picName=timeStr+toOrder(picNum)+".jpeg"
+                        request.urlretrieve(pageItem,"./data/picture/"+picName)
+                        file.write("{"+picName+"}"+"\n")
+                    else:
+                        file.write(pageItem+"\n")
 
 
-    else:
-        continue
-    print(webct['title'])
-    print(TEXT_NUM)
+
+
+
+
+        else:
+            continue
+        print(webct['title'])
+        print(TEXT_NUM)
+
+    except :
+        print("=!"*50)
+        print("出现异常")
+        print(item)
+        print("=!" * 50)
+
+        with open("logError.txt","a+",encoding="utf-8") as eLog:
+            eLog.write(str(item)+'\n')
 
 
 driver.quit()
