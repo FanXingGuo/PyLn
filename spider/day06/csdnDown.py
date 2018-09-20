@@ -6,7 +6,7 @@ import zlib
 
 
 
-pageurl='https://download.csdn.net/download/cnmiss/931875'
+pageurl='https://download.csdn.net/download/bonlog/5774137'
 #downurl='https://download.csdn.net/index.php/vip_download/download_client/10676310'
 
 
@@ -36,19 +36,33 @@ def downFile(pageurl):
     #根据网页内容获取文件类型(realType) 和文件名(fileName) =name
     #文件类型
     fileEle=htmlEle.xpath("//dl[@class='download_dl']//img/@title")[0]
-    fileType=re.match(r'[a-z]+',fileEle).group()
-    realType="."+fileType
-    #文件名称
-    filenName=htmlEle.xpath("//dl[@class='download_dl']/dd/h3/@title")[0]
-    #组装文件名
-    name=filenName+realType
-    #根据下载地址,下载文件
-    filePath="/usr/local/nginx/html/csdnData/"
-    fileUrl="http://47.106.209.59/csdnData/"
+    if fileEle!='其他文档':
+        fileType = re.match(r'[a-z]+', fileEle).group()
+        realType = "." + fileType
+        # 文件名称
+        filenName = htmlEle.xpath("//dl[@class='download_dl']/dd/h3/@title")[0]
+        # 组装文件名
+        name = filenName + realType
+    else:
+        filename=r.headers['Content-Disposition']
+        filename=str(filename).encode("utf-8")
+        filename=filename.decode("utf-8")
+        name=filename.split('"')[-2]
 
-    with open(filePath+name,'wb') as file:
+    #文件名称
+    # filenName=htmlEle.xpath("//dl[@class='download_dl']/dd/h3/@title")[0]
+    # #组装文件名
+    # name=filenName+realType
+    #根据下载地址,下载文件
+    # filePath="/usr/local/nginx/html/csdnData/"
+    # fileUrl="http://47.106.209.59/csdnData/"
+
+    with open(name,'wb') as file:
         file.write(r.content)
     file.close()
 
-    return fileUrl+name
+    return name
+
+
+downFile("https://download.csdn.net/download/bonlog/5774137")
 
