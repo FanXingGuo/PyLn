@@ -9,6 +9,7 @@ def getValue(text):
     httpLen=len(re.findall("http",text))
     return (chLen*pLen)/(1.0*(httpLen+equLen*aLen))
 
+
 def getContent(html):
     htmlEle = etree.HTML(html)
     part = htmlEle.xpath("//div")
