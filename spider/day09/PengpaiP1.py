@@ -25,11 +25,10 @@ class pengpaiP1():
             htmlEle = etree.HTML(html)
             urls = htmlEle.xpath('//a[@class="tiptitleImg"]/@href')
             titles = htmlEle.xpath('//a[@class="tiptitleImg"]/img/@alt')
-            self.stopUrl=urls[0]
             for index, item in enumerate(urls):
-                if item==stopUrl:
-                    return False
                 url = self.index + item
+                if url==stopUrl:
+                    return False
                 self.news_queue.put((titles[index], url))
             return True
         except:
@@ -78,6 +77,7 @@ if __name__=="__main__":
     news_queue = Queue(1000)
     url='https://www.thepaper.cn/'
     p=pengpaiP1(cont_queue,news_queue,url)
+    # p.Go1(stopUrl="https://www.thepaper.cn/newsDetail_forward_2496596")
     p.Go1()
-    # while not p.news_queue.empty():
-    #     print(p.news_queue.get())
+    while not p.news_queue.empty():
+        print(p.news_queue.get())
