@@ -48,7 +48,6 @@ if __name__=="__main__":
         t1=getNews(news_queue,save,name=i)
         t1.start()
     m1=pengpaiP2.mangerUrl(news_queue)
-    #id=2499545
     m2=pengpaiP2.mangerUrl(news_queue)
     id=m1.getLastId()
     m2.maxNum=id
