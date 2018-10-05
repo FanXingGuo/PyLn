@@ -25,7 +25,6 @@ class mangerUrl():
         self.url='https://www.thepaper.cn/load_chosen.jsp'
         self.prefix='https://www.thepaper.cn/newsDetail_forward_'
         self.id=self.getLastId()
-
     def checkNews(self):
         #时间轴更新
         while True:
@@ -60,7 +59,7 @@ class mangerUrl():
 
 
     def getLastId(self):
-
+        html=requests.get(self.url,headers=self.headers).content.decode("utf-8")
         htmlEle=etree.HTML(html)
         id=htmlEle.xpath('//div[@class="news_li"][1]/@id')[0].split("cont")[1]
         return id
