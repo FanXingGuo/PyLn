@@ -6,6 +6,8 @@ from concurrent.futures import ThreadPoolExecutor
 import threading
 from queue import Queue
 
+import multiprocessing as mp
+
 from lxml import etree
 
 
@@ -31,19 +33,29 @@ def lenhtml(a):
     #     title=htmlEle.xpath("//title/text()")
     #     print(title)
     #     return len(html)
+    print(len(html))
     return len(html)
 
-t2=time.time()
-Numbers=range(2505000,2505800)
-start=time.time()
-for num,result in zip(Numbers,map(lenhtml,Numbers)):
-    pass
-print("顺序执行 cost:{}".format(time.time()-start))
-
+# t2=time.time()
+# Numbers=range(2505000,2505800)
 # start=time.time()
-# greenlets=[gevent.spawn(lenhtml,a) for a in Numbers]
-# gevent.joinall(greenlets)
-# print("gvent cost:{}".format(time.time()-start))
+# for num,result in zip(Numbers,map(lenhtml,Numbers)):
+#     pass
+# print("顺序执行 cost:{}".format(time.time()-start))
+
+start=time.time()
+def pro():
+    Numbers = range(2505000, 2505800)
+    greenlets=[gevent.spawn(lenhtml,a) for a in Numbers]
+    gevent.joinall(greenlets)
+# pro()
+p1=mp.Process(target=pro)
+# p2=mp.Process(target=pro)
+p1.start()
+# p2.start()
+p1.join()
+# p2.join()
+print("gvent cost:{}".format(time.time()-start))
 
 # start=time.time()
 # with ThreadPoolExecutor(max_workers=10) as executor:
@@ -52,7 +64,7 @@ print("顺序执行 cost:{}".format(time.time()-start))
 #         pass
 # print("threads cost:{}".format(time.time() - start))
 
-print("ALL {}".format(time.time()-t2))
+# print("ALL {}".format(time.time()-t2))
 
 # gvent cost:7.0102219581604
 # threads cost:6.941188812255859

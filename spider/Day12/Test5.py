@@ -2,7 +2,7 @@ import asyncio
 import aiohttp
 from lxml import etree
 import time
-
+import multiprocessing as mp
 import socket
 
 semaphore = asyncio.Semaphore(200)
@@ -70,16 +70,19 @@ async def parse(url):
     #     print(title)
 
 
-try:
+def pro():
     loop = asyncio.get_event_loop()
     task=[parse(url) for url in urls]
     loop.run_until_complete(asyncio.wait(task))
-except:
-    print("-_-!")
+
+t1=time.time()
+# pro()
+p1=mp.Process(target=pro)
+p2=mp.Process(target=pro)
+# p1.start()
+p2.start()
+# p1.join()
+p2.join()
 print("Cost {}".format(time.time()-t1))
 
 #Cost 4.723982095718384
-
-
-
-
