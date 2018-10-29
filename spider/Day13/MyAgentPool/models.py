@@ -20,4 +20,3 @@ class Proxy(BaseModel):
     def get_random(cls):
         proxy=cls.objects.aggregate({'$sample':{'size':1}}).next()
         return proxy
-
